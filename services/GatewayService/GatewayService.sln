@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatewayService.Server", "GatewayService.Server\GatewayService.Server.csproj", "{F49EB7CC-5027-48A8-B078-67D4D7865D8C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{3623704A-F10D-4670-8ED3-373494692FD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryService.Dto.Http", "..\LibraryService\Dto\LibraryService.Dto.Http\LibraryService.Dto.Http.csproj", "{3E36E519-8396-4B63-9F22-6257A9A01967}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RatingService.Dto.Http", "..\RatingService\Dto\RatingService.Dto.Http\RatingService.Dto.Http.csproj", "{0AEBE402-A988-4137-B294-177788377B25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReservationService.Dto.Http", "..\ReservationService\Dto\ReservationService.Dto.Http\ReservationService.Dto.Http.csproj", "{23820947-D304-4433-8926-92C74070321C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dto", "Dto", "{C662EC8E-7965-49EB-98B0-BE02C7C1716C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatewayService.Dto.Http", "Dto\GatewayService.Dto.Http\GatewayService.Dto.Http.csproj", "{DDF7F2FC-6219-4F17-98C3-7F997B801DC4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F49EB7CC-5027-48A8-B078-67D4D7865D8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F49EB7CC-5027-48A8-B078-67D4D7865D8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F49EB7CC-5027-48A8-B078-67D4D7865D8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F49EB7CC-5027-48A8-B078-67D4D7865D8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E36E519-8396-4B63-9F22-6257A9A01967}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E36E519-8396-4B63-9F22-6257A9A01967}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E36E519-8396-4B63-9F22-6257A9A01967}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E36E519-8396-4B63-9F22-6257A9A01967}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AEBE402-A988-4137-B294-177788377B25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AEBE402-A988-4137-B294-177788377B25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AEBE402-A988-4137-B294-177788377B25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AEBE402-A988-4137-B294-177788377B25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23820947-D304-4433-8926-92C74070321C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23820947-D304-4433-8926-92C74070321C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23820947-D304-4433-8926-92C74070321C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23820947-D304-4433-8926-92C74070321C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDF7F2FC-6219-4F17-98C3-7F997B801DC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDF7F2FC-6219-4F17-98C3-7F997B801DC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDF7F2FC-6219-4F17-98C3-7F997B801DC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDF7F2FC-6219-4F17-98C3-7F997B801DC4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3E36E519-8396-4B63-9F22-6257A9A01967} = {3623704A-F10D-4670-8ED3-373494692FD9}
+		{0AEBE402-A988-4137-B294-177788377B25} = {3623704A-F10D-4670-8ED3-373494692FD9}
+		{23820947-D304-4433-8926-92C74070321C} = {3623704A-F10D-4670-8ED3-373494692FD9}
+		{DDF7F2FC-6219-4F17-98C3-7F997B801DC4} = {C662EC8E-7965-49EB-98B0-BE02C7C1716C}
+	EndGlobalSection
+EndGlobal
