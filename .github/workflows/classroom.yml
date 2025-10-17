@@ -116,6 +116,19 @@ jobs:
           delayRequest: 100
           reporters: '[ "cli" ]'
 
+      - name: Show logs 
+        run: |
+          echo "=== Postgres Logs ==="
+          docker compose -f docker-compose.test.yml logs postgres
+          echo "=== Gateway Logs ==="
+          docker compose -f docker-compose.test.yml logs gateway-service
+          echo "=== Library Logs ==="
+          docker compose -f docker-compose.test.yml logs library-service
+          echo "=== Rating Logs ==="
+          docker compose -f docker-compose.test.yml logs rating-service
+          echo "=== Reservation Logs ==="
+          docker compose -f docker-compose.test.yml logs reservation-service
+
       - name: Cleanup
         if: always()
         run: docker compose -f docker-compose.test.yml down -v
