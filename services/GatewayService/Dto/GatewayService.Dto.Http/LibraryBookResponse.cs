@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using GatewayService.Dto.Http.Enums;
 
 namespace GatewayService.Dto.Http;
 
@@ -28,21 +29,21 @@ public class LibraryBookResponse
     /// </summary>
     [Required]
     [DataMember(Name = "author")]
-    public string Author { get; set; }
+    public string? Author { get; set; }
 
     /// <summary>
     /// Жанр
     /// </summary>
     [Required]
     [DataMember(Name = "genre")]
-    public string Genre { get; set; }
+    public string? Genre { get; set; }
 
     /// <summary>
     /// Состояние книги
     /// </summary>
     [Required]
     [DataMember(Name = "condition")]
-    public string Condition { get; set; }
+    public BookCondition Condition { get; set; }
 
     /// <summary>
     /// Количество книг, доступных для аренды в библиотеке
@@ -51,7 +52,7 @@ public class LibraryBookResponse
     [DataMember(Name = "availableCount")]
     public int AvailableCount { get; set; }
 
-    public LibraryBookResponse(Guid bookUid, string name, string author, string genre, string condition, int availableCount)
+    public LibraryBookResponse(Guid bookUid, string name, string? author, string? genre, BookCondition condition, int availableCount)
     {
         BookUid = bookUid;
         Name = name;

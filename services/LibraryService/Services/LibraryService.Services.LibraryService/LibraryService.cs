@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using LibraryService.Core;
+using Microsoft.Extensions.Logging;
 using LibraryService.Core.Interfaces;
 using LibraryService.Core.Models;
+using LibraryService.Core.Models.Enums;
 
 namespace LibraryService.Services.LibraryService;
 
@@ -59,21 +61,60 @@ public class LibraryService : ILibraryService
         return result;
     }
 
-    public async Task CheckOutBookAsync(Guid libraryId, Guid bookUid)
+    public async Task<InventoryItem> CheckOutBookAsync(Guid libraryId, Guid bookUid)
     {
         _logger.LogDebug("Checking out book {BookUid} in library {LibraryId}", bookUid, libraryId);
         
-        await _libraryRepository.CheckOutBookAsync(libraryId, bookUid);
+        var result = await _libraryRepository.CheckOutBookAsync(libraryId, bookUid);
         
         _logger.LogInformation("Book {BookUid} has been checked out int library {LibraryId}", bookUid, libraryId);
+
+        return result;
     }
 
-    public async Task CheckInBookAsync(Guid libraryId, Guid bookUid)
+    public async Task<CheckInResult> CheckInBookAsync(Guid libraryId, Guid bookUid, BookCondition bookCondition)
     {
         _logger.LogDebug("Checking in book {BookUid} in library {LibraryId}", bookUid, libraryId);
         
-        await _libraryRepository.CheckInBookAsync(libraryId, bookUid);
+        var oldBook = await _libraryRepository.GetBookByIdAsync(libraryId, bookUid);
+        
+        var result = await _libraryRepository.CheckInBookAsync(libraryId, bookUid, bookCondition);
         
         _logger.LogInformation("Book {BookUid} has been checked in int library {LibraryId}", bookUid, libraryId);
+
+        return new CheckInResult(oldBook, result);
+    }
+
+    public async Task<InventoryItem> GetBookByIdAsync(Guid libraryId, Guid bookUid)
+    {
+        _logger.LogDebug("Getting book {BookUid} from library {LibraryId}", bookUid, libraryId);
+        
+        var result = await _libraryRepository.GetBookByIdAsync(libraryId, bookUid);
+        
+        _logger.LogInformation("Got book {BookUid} from library {LibraryId}", bookUid, libraryId);
+        
+        return result;
+    }
+    
+    public async Task<Library> GetLibraryByIdAsync(Guid libraryId)
+    {
+        _logger.LogDebug("Getting library {LibraryId}", libraryId);
+        
+        var result = await _libraryRepository.GetLibraryByIdAsync(libraryId);
+        
+        _logger.LogInformation("Got library {LibraryId}", libraryId);
+        
+        return result;
+    }
+
+    public async Task<List<BookWithLibrary>> GetBooksWithLibrariesAsync(List<Guid> bookIds)
+    {
+        _logger.LogDebug("Getting books with libraries");
+        
+        var result = await _libraryRepository.GetBooksWithLibrariesAsync(bookIds);
+        
+        _logger.LogInformation("Got books with libraries");
+        
+        return result;
     }
 }

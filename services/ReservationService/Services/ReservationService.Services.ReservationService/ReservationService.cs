@@ -65,4 +65,15 @@ public class ReservationService : IReservationService
         
         return result;
     }
+
+    public async Task<Reservation> GetReservationByIdAsync(Guid reservationId)
+    {
+        _logger.LogDebug("Getting reservation {ReservationId}", reservationId);
+        
+        var reservation = await _reservationRepository.GetReservationByIdAsync(reservationId);
+        
+        _logger.LogInformation("Retrieved reservation {ReservationId}", reservationId);
+        
+        return reservation;
+    }
 }

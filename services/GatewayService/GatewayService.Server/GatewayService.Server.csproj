@@ -24,13 +24,17 @@
         <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.7.3" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.9" />
         <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.4.0" />
+        <PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
+        <PackageReference Include="Refit.Newtonsoft.Json" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\LibraryService\Dto\LibraryService.Dto.Http\LibraryService.Dto.Http.csproj" />
       <ProjectReference Include="..\..\RatingService\Dto\RatingService.Dto.Http\RatingService.Dto.Http.csproj" />
       <ProjectReference Include="..\..\ReservationService\Dto\ReservationService.Dto.Http\ReservationService.Dto.Http.csproj" />
+      <ProjectReference Include="..\Dto\GatewayService.Dto.Http.Converters\GatewayService.Dto.Http.Converters.csproj" />
       <ProjectReference Include="..\Dto\GatewayService.Dto.Http\GatewayService.Dto.Http.csproj" />
+      <ProjectReference Include="..\GatewayService.Core\GatewayService.Core.csproj" />
     </ItemGroup>
 
 </Project>

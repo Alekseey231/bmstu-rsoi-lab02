@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using GatewayService.Dto.Http.Enums;
 
 namespace GatewayService.Dto.Http;
 
@@ -21,21 +22,21 @@ public class TakeBookResponse
     /// </summary>
     [Required]
     [DataMember(Name = "status")]
-    public string Status { get; set; }
+    public ReservationStatus Status { get; set; }
 
     /// <summary>
     /// Дата начала бронирования
     /// </summary>
     [Required]
     [DataMember(Name = "startDate")]
-    public DateTime StartDate { get; set; }
+    public DateOnly StartDate { get; set; }
 
     /// <summary>
     /// Дата окончания бронирования
     /// </summary>
     [Required]
     [DataMember(Name = "tillDate")]
-    public DateTime TillDate { get; set; }
+    public DateOnly TillDate { get; set; }
 
     /// <summary>
     /// Информация о книге
@@ -58,7 +59,7 @@ public class TakeBookResponse
     [DataMember(Name = "rating")]
     public UserRatingResponse Rating { get; set; }
 
-    public TakeBookResponse(Guid reservationUid, string status, DateTime startDate, DateTime tillDate, BookInfo book, LibraryResponse library, UserRatingResponse rating)
+    public TakeBookResponse(Guid reservationUid, ReservationStatus status, DateOnly startDate, DateOnly tillDate, BookInfo book, LibraryResponse library, UserRatingResponse rating)
     {
         ReservationUid = reservationUid;
         Status = status;

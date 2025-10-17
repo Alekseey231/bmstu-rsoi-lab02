@@ -77,7 +77,7 @@ public class ReservationController : ControllerBase
     }
     
     [HttpGet]
-    [SwaggerOperation("Метод для получения резервирований книги.", "Метод для получения резервирований книги.")]
+    [SwaggerOperation("Метод для получения резервирований книг.", "Метод для получения резервирований книг.")]
     [SwaggerResponse(statusCode: 200, type: typeof(List<Reservation>), description: "Резервации успешно получены.")]
     [SwaggerResponse(statusCode: 500, type: typeof(ErrorResponse), description: "Ошибка на стороне сервера.")]
     public async Task<IActionResult> GetReservations([Required][FromQuery] string userName,
@@ -95,6 +95,28 @@ public class ReservationController : ControllerBase
         catch (Exception e)
         {
             _logger.LogError(e, "Error in method {Method}", nameof(GetReservations));
+            
+            return StatusCode(500, new ErrorResponse("Неожиданная ошибка на стороне сервера."));
+        }
+    }
+    
+    [HttpGet("{reservationId:guid}")]
+    [SwaggerOperation("Метод для получения резервирований книги.", "Метод для получения резервирований книги.")]
+    [SwaggerResponse(statusCode: 200, type: typeof(Reservation), description: "Резервации успешно получены.")]
+    [SwaggerResponse(statusCode: 500, type: typeof(ErrorResponse), description: "Ошибка на стороне сервера.")]
+    public async Task<IActionResult> GetReservationById([Required][FromRoute] Guid reservationId)
+    {
+        try
+        {
+            var reservation = await _reservationService.GetReservationByIdAsync(reservationId);
+            
+            var dtoReservation = ReservationConverter.Convert(reservation);
+            
+            return Ok(dtoReservation);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in method {Method}", nameof(GetReservationById));
             
             return StatusCode(500, new ErrorResponse("Неожиданная ошибка на стороне сервера."));
         }

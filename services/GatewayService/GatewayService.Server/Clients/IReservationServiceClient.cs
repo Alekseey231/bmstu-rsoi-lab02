@@ -18,4 +18,7 @@ public interface IReservationServiceClient
     Task<Reservation> UpdateReservationAsync(
         Guid reservationId,
         [Body] UpdateReservationRequest request);
+    
+    [Get("/api/v1/reservations/{reservationId}")]
+    Task<Reservation> GetReservationByIdAsync(Guid reservationId);
 }

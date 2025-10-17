@@ -1,4 +1,5 @@
 using LibraryService.Core.Models;
+using LibraryService.Core.Models.Enums;
 
 namespace LibraryService.Core.Interfaces;
 
@@ -12,7 +13,13 @@ public interface ILibraryRepository
     
     Task<int> GetCountOfLibraryBooksAsync(Guid libraryUid, bool? showAll);
     
-    Task CheckOutBookAsync(Guid libraryId, Guid bookUid);
+    Task<InventoryItem> CheckOutBookAsync(Guid libraryId, Guid bookUid);
     
-    Task CheckInBookAsync(Guid libraryId, Guid bookUid);
+    Task<InventoryItem> CheckInBookAsync(Guid libraryId, Guid bookUid, BookCondition bookCondition);
+
+    Task<InventoryItem> GetBookByIdAsync(Guid libraryId, Guid bookUid);
+    
+    Task<Library> GetLibraryByIdAsync(Guid libraryId);
+    
+    Task<List<BookWithLibrary>> GetBooksWithLibrariesAsync(List<Guid> bookIds);
 }

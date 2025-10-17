@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LibraryService.Core;
+using Microsoft.EntityFrameworkCore;
 using LibraryService.Core.Exceptions;
 using LibraryService.Core.Interfaces;
 using LibraryService.Core.Models;
+using LibraryService.Core.Models.Enums;
 using LibraryService.Database.Context;
 using LibraryService.Database.Repositories.Converters;
+using LibraryService.Database.Repositories.Converters.Enums;
 
 namespace LibraryService.Database.Repositories;
 
@@ -82,7 +85,7 @@ public class LibraryRepository : ILibraryRepository
         return await query.CountAsync();
     }
 
-    public async Task CheckOutBookAsync(Guid libraryUid, Guid bookUid)
+    public async Task<InventoryItem> CheckOutBookAsync(Guid libraryUid, Guid bookUid)
     {
         //TODO: fix concurrently
         var library = await _context.Libraries
@@ -111,10 +114,14 @@ public class LibraryRepository : ILibraryRepository
         libraryBook.AvailableCount--;
         
         await _context.SaveChangesAsync();
+
+        return new InventoryItem(BookConverter.Convert(book), libraryBook.AvailableCount);
     }
 
-    public async Task CheckInBookAsync(Guid libraryUid, Guid bookUid)
+    public async Task<InventoryItem> CheckInBookAsync(Guid libraryUid, Guid bookUid, BookCondition bookCondition)
     {
+        var newCondition = BookConditionConverter.Convert(bookCondition);
+        
         var library = await _context.Libraries
             .FirstOrDefaultAsync(l => l.LibraryId == libraryUid);
         
@@ -126,6 +133,8 @@ public class LibraryRepository : ILibraryRepository
         
         if (book is null)
             throw new BookNotFoundException();
+        
+        book.BookCondition = newCondition;
 
         var libraryBook = await _context.LibraryBooks
             .FirstOrDefaultAsync(lb => 
@@ -138,5 +147,56 @@ public class LibraryRepository : ILibraryRepository
         libraryBook.AvailableCount++;
         
         await _context.SaveChangesAsync();
+        
+        return new InventoryItem(BookConverter.Convert(book), libraryBook.AvailableCount);
+    }
+
+    public async Task<InventoryItem> GetBookByIdAsync(Guid libraryId, Guid bookUid)
+    {
+        var library = await _context.Libraries
+            .FirstOrDefaultAsync(l => l.LibraryId == libraryId);
+        
+        if (library is null)
+            throw new LibraryNotFoundException();
+
+        var book = await _context.Books
+            .FirstOrDefaultAsync(b => b.BookId == bookUid);
+        
+        if (book is null)
+            throw new BookNotFoundException();
+        
+        var libraryBook = await _context.LibraryBooks
+            .FirstOrDefaultAsync(lb => 
+                lb.LibraryId == library.Id && 
+                lb.BookId == book.Id);
+        
+        if (libraryBook is null)
+            throw new BookNotFoundInLibraryException();
+        
+        return new InventoryItem(BookConverter.Convert(book), libraryBook.AvailableCount);
+    }
+    
+    public async Task<Library> GetLibraryByIdAsync(Guid libraryId)
+    {
+        var library = await _context.Libraries
+            .FirstOrDefaultAsync(l => l.LibraryId == libraryId);
+        
+        if (library is null)
+            throw new LibraryNotFoundException();
+        
+        return LibraryConverter.Convert(library);
+    }
+    
+    public async Task<List<BookWithLibrary>> GetBooksWithLibrariesAsync(List<Guid> bookIds)
+    {
+        var booksWithLibraries = await _context.LibraryBooks
+            .Include(lb => lb.Book)
+            .Include(lb => lb.Library)
+            .Where(lb => bookIds.Contains(lb.Book!.BookId))
+            .Select(lb => new BookWithLibrary(new InventoryItem(BookConverter.Convert(lb.Book!), lb.AvailableCount),
+                LibraryConverter.Convert(lb.Library!)))
+            .ToListAsync();
+
+        return booksWithLibraries;
     }
 }

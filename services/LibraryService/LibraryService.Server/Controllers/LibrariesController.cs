@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using LibraryService.Core.Interfaces;
 using LibraryService.Dto.Http;
 using LibraryService.Dto.Http.Converters;
+using LibraryService.Dto.Http.Converters.Enums;
+using LibraryService.Dto.Http.Models;
+using LibraryService.Dto.Http.Models.Enums;
+using LibraryService.Server.Converters;
 using LibraryService.Server.Helpers;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -94,18 +98,77 @@ public class LibrariesController : ControllerBase
         }
     }
     
-    [HttpPost("{libraryUid:guid}/books/{bookUid:guid}/checkin")]
-    [SwaggerOperation("Метод для возврата книги.", "Метод для возврата книги.")]
-    [SwaggerResponse(statusCode: 200, description: "Книга успешно возвращена.")]
+    [HttpGet("{libraryUid:guid}/books/{bookUid:guid}")]
+    [SwaggerOperation("Метод для получения книги.", "Метод для получения книги.")]
+    [SwaggerResponse(statusCode: 200, type: typeof(BookWithLibrary), description: "Книга успешно получена.")]
     [SwaggerResponse(statusCode: 500, type: typeof(ErrorResponse), description: "Ошибка на стороне сервера.")]
-    public async Task<IActionResult> CheckInBook([Required] [FromRoute] Guid libraryUid,
+    public async Task<IActionResult> GetBook([Required] [FromRoute] Guid libraryUid,
         [Required] [FromRoute] Guid bookUid)
     {
         try
         {
-            await _libraryService.CheckInBookAsync(libraryUid, bookUid);
+            var library = await _libraryService.GetLibraryByIdAsync(libraryUid);
+            var item = await _libraryService.GetBookByIdAsync(libraryUid, bookUid);
+            
+            var dtoBook = LibraryBookConverter.Convert(item);
+            var dtoLibrary = LibraryConverter.Convert(library);
 
-            return Ok();
+            return Ok(new BookWithLibrary(dtoBook, dtoLibrary));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in method {Method}", nameof(GetBook));
+            
+            return StatusCode(500, e.Message);
+        }
+    }
+    
+    [HttpGet("books")]
+    [SwaggerOperation("Метод для получения книг.", "Метод для получения книг.")]
+    [SwaggerResponse(statusCode: 200, type: typeof(List<BookWithLibrary>), description: "Книги успешно получена.")]
+    [SwaggerResponse(statusCode: 500, type: typeof(ErrorResponse), description: "Ошибка на стороне сервера.")]
+    public async Task<IActionResult> GetBooksByIds([Required, FromQuery] string sourceIds)
+    {
+        var ids = QueryValuesToListConverter.Convert(sourceIds);
+        if (ids == null)
+        {
+            _logger.LogWarning("Bad Request. List of source ids is empty.");
+
+            return BadRequest();
+        }
+        
+        try
+        {
+            var library = await _libraryService.GetBooksWithLibrariesAsync(ids);
+            
+            var dtoLibraries = library.ConvertAll(LibraryWithBookConverter.Convert);
+
+            return Ok(dtoLibraries);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error in method {Method}", nameof(GetBooksByIds));
+            
+            return StatusCode(500, e.Message);
+        }
+    }
+    
+    [HttpPost("{libraryUid:guid}/books/{bookUid:guid}/checkin")]
+    [SwaggerOperation("Метод для возврата книги.", "Метод для возврата книги.")]
+    [SwaggerResponse(statusCode: 200, type: typeof(CheckInBookResponse), description: "Книга успешно возвращена.")]
+    [SwaggerResponse(statusCode: 500, type: typeof(ErrorResponse), description: "Ошибка на стороне сервера.")]
+    public async Task<IActionResult> CheckInBook([Required] [FromRoute] Guid libraryUid,
+        [Required] [FromRoute] Guid bookUid,
+        [Required] [FromBody] BookCondition bookCondition)
+    {
+        try
+        {
+            var item = await _libraryService.CheckInBookAsync(libraryUid, bookUid, BookConditionConvertor.Convert(bookCondition));
+            
+            var newDtoBook = LibraryBookConverter.Convert(item.NewItem);
+            var oldDtoBook = LibraryBookConverter.Convert(item.OldItem);
+
+            return Ok(new CheckInBookResponse(oldDtoBook, newDtoBook));
         }
         catch (Exception e)
         {
@@ -116,17 +179,19 @@ public class LibrariesController : ControllerBase
     }
     
     [HttpPost("{libraryUid:guid}/books/{bookUid:guid}/checkout")]
-    [SwaggerOperation("Метод для получения книги.", "Метод для получения книги.")]
-    [SwaggerResponse(statusCode: 200, description: "Книга успешно получена.")]
+    [SwaggerOperation("Метод для аренды книги.", "Метод для аренды книги.")]
+    [SwaggerResponse(statusCode: 200, type: typeof(LibraryBook), description: "Книга успешно арендована.")]
     [SwaggerResponse(statusCode: 500, type: typeof(ErrorResponse), description: "Ошибка на стороне сервера.")]
     public async Task<IActionResult> CheckOutBook([Required] [FromRoute] Guid libraryUid,
         [Required] [FromRoute] Guid bookUid)
     {
         try
         {
-            await _libraryService.CheckOutBookAsync(libraryUid, bookUid);
+            var item = await _libraryService.CheckOutBookAsync(libraryUid, bookUid);
+            
+            var dtoBook = LibraryBookConverter.Convert(item);
 
-            return Ok();
+            return Ok(dtoBook);
         }
         catch (Exception e)
         {

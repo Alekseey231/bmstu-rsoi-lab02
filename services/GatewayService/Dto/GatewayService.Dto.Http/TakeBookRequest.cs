@@ -28,9 +28,9 @@ public class TakeBookRequest
     /// </summary>
     [Required]
     [DataMember(Name = "tillDate")]
-    public DateTime TillDate { get; set; }
+    public DateOnly TillDate { get; set; }
 
-    public TakeBookRequest(Guid bookUid, Guid libraryUid, DateTime tillDate)
+    public TakeBookRequest(Guid bookUid, Guid libraryUid, DateOnly tillDate)
     {
         BookUid = bookUid;
         LibraryUid = libraryUid;

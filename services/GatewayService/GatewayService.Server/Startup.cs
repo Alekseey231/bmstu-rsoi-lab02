@@ -1,4 +1,5 @@
 using System.Reflection;
+using GatewayService.Server.Extensions;
 using Microsoft.OpenApi.Models;
 
 namespace GatewayService.Server;
@@ -14,6 +15,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddRefitClients(Configuration);
         services.AddControllers().AddNewtonsoftJson();
         
         services.AddSwaggerGen(c =>

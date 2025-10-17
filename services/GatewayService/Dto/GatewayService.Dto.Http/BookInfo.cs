@@ -28,16 +28,16 @@ public class BookInfo
     /// </summary>
     [Required]
     [DataMember(Name = "author")]
-    public string Author { get; set; }
+    public string? Author { get; set; }
 
     /// <summary>
     /// Жанр
     /// </summary>
     [Required]
     [DataMember(Name = "genre")]
-    public string Genre { get; set; }
+    public string? Genre { get; set; }
 
-    public BookInfo(Guid bookUid, string name, string author, string genre)
+    public BookInfo(Guid bookUid, string name, string? author, string? genre)
     {
         BookUid = bookUid;
         Name = name;

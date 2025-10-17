@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using GatewayService.Dto.Http;
+using GatewayService.Dto.Http.Converters;
 using GatewayService.Server.Clients;
-using LibraryService.Dto.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -23,20 +24,22 @@ public class LibraryController : ControllerBase
     [SwaggerOperation("Получить список библиотек в городе", "Получить список библиотек в городе")]
     [SwaggerResponse(statusCode: 200, type: typeof(LibraryPaginationResponse), description: "Список библиотек в городе")]
     [SwaggerResponse(statusCode: 500, type: typeof(ErrorResponse), description: "Ошибка на стороне сервера")]
-    public async Task<IActionResult> GetLibraries(
-        [Required][FromQuery] string city,
+    public async Task<IActionResult> GetLibraries([Required][FromQuery] string city,
         [FromQuery] int? page,
         [FromQuery] int? size)
     {
         try
         {
-            await Task.Delay(1);
-            // Implementation here
-            return Ok();
+            var libraries = await _libraryServiceRequestClient.GetLibrariesAsync(city, page, size);
+            
+            var dtoLibraries = LibraryResponseConverter.Convert(libraries);
+            
+            return Ok(dtoLibraries);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error in method {Method}", nameof(GetLibraries));
+            
             return StatusCode(500, new ErrorResponse("Неожиданная ошибка на стороне сервера."));
         }
     }
@@ -45,17 +48,21 @@ public class LibraryController : ControllerBase
     [SwaggerOperation("Получить список книг в выбранной библиотеке", "Получить список книг в выбранной библиотеке")]
     [SwaggerResponse(statusCode: 200, type: typeof(LibraryBookPaginationResponse), description: "Список книг в библиотеке")]
     [SwaggerResponse(statusCode: 500, type: typeof(ErrorResponse), description: "Ошибка на стороне сервера")]
-    public async Task<IActionResult> GetLibraryBooks(
-        [Required][FromRoute] Guid libraryUid,
+    public async Task<IActionResult> GetLibraryBooks([Required][FromRoute] Guid libraryUid,
         [FromQuery] int? page,
         [FromQuery] int? size,
         [FromQuery] bool? showAll)
     {
         try
         {
-            await Task.Delay(1);
-            // Implementation here
-            return Ok();
+            var books = await _libraryServiceRequestClient.GetBooksAsync(libraryUid,
+                showAll,
+                page,
+                size);
+            
+            var dtoBooks = LibraryBookPaginationResponseConverter.Convert(books);
+            
+            return Ok(dtoBooks);
         }
         catch (Exception e)
         {

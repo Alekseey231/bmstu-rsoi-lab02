@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using GatewayService.Dto.Http;
+using GatewayService.Dto.Http.Converters;
 using GatewayService.Server.Clients;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -27,9 +28,11 @@ public class RatingController : ControllerBase
     {
         try
         {
-            await Task.Delay(1);
-            // Implementation here
-            return Ok();
+            var rating = await _ratingServiceRequestClient.GetRatingAsync(userName);
+            
+            var dtoRating = RatingConverter.Convert(rating);
+            
+            return Ok(dtoRating);
         }
         catch (Exception e)
         {

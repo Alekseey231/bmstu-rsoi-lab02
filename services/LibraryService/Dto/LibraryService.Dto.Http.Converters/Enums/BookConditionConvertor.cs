@@ -16,4 +16,16 @@ public static class BookConditionConvertor
             _ => throw new ArgumentOutOfRangeException(nameof(model), model, null)
         };
     }
+    
+    public static CoreBookCondition Convert(DtoBookCondition model)
+    {
+        return model switch
+        {
+            DtoBookCondition.Bad => CoreBookCondition.Bad,
+            DtoBookCondition.Good => CoreBookCondition.Good,
+            DtoBookCondition.Excellent => CoreBookCondition.Excellent,
+
+            _ => throw new ArgumentOutOfRangeException(nameof(model), model, null)
+        };
+    }
 }

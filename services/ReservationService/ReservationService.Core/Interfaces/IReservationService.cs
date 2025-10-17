@@ -19,4 +19,6 @@ public interface IReservationService
     public Task<Reservation> UpdateReservationAsync(Guid reservationId, DateTime returnedDate);
     
     public Task<List<Reservation>> GetReservationByUserNameAsync(string userName, ReservationStatus? status);
+    
+    public Task<Reservation> GetReservationByIdAsync(Guid reservationId);
 }
