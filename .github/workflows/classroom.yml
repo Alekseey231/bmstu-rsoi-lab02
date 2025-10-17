@@ -29,8 +29,9 @@ jobs:
 
       - name: Run Unit Tests
         run: |
-          if [ -d "services/${{ matrix.service.path }}/src/${{ matrix.service.path }}.Tests" ]; then
-            dotnet test services/${{ matrix.service.path }}/src/${{ matrix.service.path }}.Tests/ --configuration Release --verbosity normal
+          cd services/${{ matrix.service.path }}
+          if [ -d "src/${{ matrix.service.path }}.Tests" ]; then
+            dotnet test src/${{ matrix.service.path }}.Tests/ --configuration Release --verbosity normal
           else
             echo "No tests found for ${{ matrix.service.name }}, skipping..."
           fi
