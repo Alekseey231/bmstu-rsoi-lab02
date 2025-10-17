@@ -20,10 +20,10 @@ jobs:
           - { name: 'reservation', path: 'ReservationService', port: '8070' }
     
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
@@ -57,7 +57,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.service.name }}-service
           path: /tmp/${{ matrix.service.name }}-service.tar
@@ -69,10 +69,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: /tmp/images
 
@@ -102,27 +102,27 @@ jobs:
         if: failure()
         run: |
           echo "=== Postgres Logs ==="
-          docker compose -f docker-compose.test.yml logs postgres
+          docker-compose -f docker-compose.test.yml logs postgres
           echo "=== Gateway Logs ==="
-          docker compose -f docker-compose.test.yml logs gateway-service
+          docker-compose -f docker-compose.test.yml logs gateway-service
           echo "=== Library Logs ==="
-          docker compose -f docker-compose.test.yml logs library-service
+          docker-compose -f docker-compose.test.yml logs library-service
           echo "=== Rating Logs ==="
-          docker compose -f docker-compose.test.yml logs rating-service
+          docker-compose -f docker-compose.test.yml logs rating-service
           echo "=== Reservation Logs ==="
-          docker compose -f docker-compose.test.yml logs reservation-service
+          docker-compose -f docker-compose.test.yml logs reservation-service
 
-      - name: Run API Tests
+      - name: Run Postman Tests
         uses: matt-ball/newman-action@master
         with:
-          collection: v4/postman/collection.json
-          environment: v4/postman/environment.json
+          collection: postman/[inst] Lab1.postman_collection.json
+          environment: postman/[inst][local] Lab1.postman_environment.json
           delayRequest: 100
           reporters: '[ "cli" ]'
 
       - name: Cleanup
         if: always()
-        run: docker compose -f docker-compose.test.yml down -v
+        run: docker-compose -f docker-compose.test.yml down -v
 
       - name: Autograding
         uses: education/autograding@v1
