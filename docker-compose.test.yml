@@ -8,8 +8,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
-    volumes:
-      - ./postgres/:/docker-entrypoint-initdb.d/
     ports:
       - "5432:5432"
     healthcheck:
@@ -71,6 +69,25 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8070
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=ReservationServiceDb;Username=postgres;Password=postgres
+
+  init-db:
+    image: postgres:15
+    depends_on:
+      - gateway-service
+      - library-service
+      - rating-service
+      - reservation-service
+    environment:
+      PGPASSWORD: postgres
+    volumes:
+      - ./postgres/seed-data.sql:/seed-data.sql
+    command: |
+      sh -c "
+        echo 'Waiting for services to be ready...'
+        sleep 5
+        psql -h postgres -U postgres -d postgres -f /seed-data.sql
+        echo 'Data seeded successfully'
+      "
 
 networks:
   default:
