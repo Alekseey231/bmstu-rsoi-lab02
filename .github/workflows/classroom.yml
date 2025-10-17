@@ -44,7 +44,7 @@ jobs:
           # Publish .NET application
           dotnet publish src/${{ matrix.service.path }}.Server/${{ matrix.service.path }}.Server.csproj \
             -c Release \
-            -o ${{ matrix.service.path }}ServicePublish/
+            -o ${{ matrix.service.path }}Publish/
           
           # Build Docker image
           docker build -t ${{ matrix.service.name }}-service:test .
