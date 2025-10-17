@@ -1,9 +1,11 @@
 using System.Reflection;
 using Microsoft.OpenApi.Models;
+using RatingService.Core.Interfaces;
 using RatingService.Database.Repositories.Extensions;
 using RatingService.Services.RatingService.Extensions;
 using RatingService.Database.Context.Extensions;
 using RatingService.Server.Attributes;
+using RatingService.Services.DataInitializer;
 
 namespace RatingService.Server;
 
@@ -34,7 +36,8 @@ public class Startup
         
         services.AddDbContext(Configuration);
         services.AddRepositories();
-        services.AddPersonService();
+        services.AddRatingService();
+        services.AddScoped<IDataInitializer, DataInitializer>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

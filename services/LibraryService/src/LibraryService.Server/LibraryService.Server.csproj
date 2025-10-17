@@ -36,6 +36,7 @@
       <ProjectReference Include="..\Dto\LibraryService.Dto.Http\LibraryService.Dto.Http.csproj" />
       <ProjectReference Include="..\LibraryService.Core\LibraryService.Core.csproj" />
       <ProjectReference Include="..\Dto\LibraryService.Dto.Http.Converters\LibraryService.Dto.Http.Converters.csproj" />
+      <ProjectReference Include="..\Services\LibraryService.Services.DataInitializer\LibraryService.Services.DataInitializer.csproj" />
       <ProjectReference Include="..\Services\LibraryService.Services.LibraryService\LibraryService.Services.LibraryService.csproj" />
     </ItemGroup>
 

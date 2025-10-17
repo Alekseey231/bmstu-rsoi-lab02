@@ -1,3 +1,4 @@
+using LibraryService.Core.Interfaces;
 using LibraryService.Server.Extensions;
 using Serilog;
 
@@ -7,15 +8,23 @@ public class Program
 {
     private const string _appsettingsFilename = "appsettings.json";
 
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         Log.Logger = SerilogLoggerFactory.CreateProductionOrDefaultConfiguration(_appsettingsFilename);
         try
         {
-            CreateHostBuilder(args)
+            var host = CreateHostBuilder(args)
                 .Build()
-                .MigrateDatabase()
-                .Run();
+                .MigrateDatabase();
+            
+            if (Environment.GetEnvironmentVariable("INIT_DATABASE") == "true")
+            {
+                using var scope = host.Services.CreateScope();
+                var initializer = scope.ServiceProvider.GetRequiredService<IDataInitializer>();
+                await initializer.InitializeAsync();
+            }
+            
+            await host.RunAsync();
         }
         catch (Exception e)
         {

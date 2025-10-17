@@ -36,6 +36,7 @@
       <ProjectReference Include="..\Dto\RatingService.Dto.Http\RatingService.Dto.Http.csproj" />
       <ProjectReference Include="..\RatingService.Core\RatingService.Core.csproj" />
       <ProjectReference Include="..\Dto\RatingService.Dto.Http.Converters\RatingService.Dto.Http.Converters.csproj" />
+      <ProjectReference Include="..\Services\RatingService.Services.DataInitializer\RatingService.Services.DataInitializer.csproj" />
       <ProjectReference Include="..\Services\RatingService.Services.RatingService\RatingService.Services.RatingService.csproj" />
     </ItemGroup>
 

@@ -5,7 +5,7 @@ namespace RatingService.Services.RatingService.Extensions;
 
 public static class ProviderExtensions
 {
-    public static void AddPersonService(this IServiceCollection services)
+    public static void AddRatingService(this IServiceCollection services)
     {
         services.AddScoped<IRatingService, RatingService>();
     }

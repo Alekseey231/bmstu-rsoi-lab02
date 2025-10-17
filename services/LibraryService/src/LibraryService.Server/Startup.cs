@@ -1,8 +1,10 @@
 using System.Reflection;
+using LibraryService.Core.Interfaces;
 using Microsoft.OpenApi.Models;
 using LibraryService.Database.Repositories.Extensions;
 using LibraryService.Services.LibraryService.Extensions;
 using LibraryService.Database.Context.Extensions;
+using LibraryService.Services.DataInitializer;
 
 namespace LibraryService.Server;
 
@@ -32,6 +34,7 @@ public class Startup
         services.AddDbContext(Configuration);
         services.AddRepositories();
         services.AddLibraryService();
+        services.AddScoped<IDataInitializer, DataInitializer>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

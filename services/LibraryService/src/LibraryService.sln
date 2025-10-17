@@ -26,6 +26,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5C1F5661
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryService.Tests.Services", "Tests\LibraryService.Tests.Services\LibraryService.Tests.Services.csproj", "{8A99CF5C-ADEA-465C-BB79-A9A71A7FF82E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryService.Services.DataInitializer", "Services\LibraryService.Services.DataInitializer\LibraryService.Services.DataInitializer.csproj", "{F96081F6-301D-4785-8AB8-0C62E87C338D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{8A99CF5C-ADEA-465C-BB79-A9A71A7FF82E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A99CF5C-ADEA-465C-BB79-A9A71A7FF82E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A99CF5C-ADEA-465C-BB79-A9A71A7FF82E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F96081F6-301D-4785-8AB8-0C62E87C338D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F96081F6-301D-4785-8AB8-0C62E87C338D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F96081F6-301D-4785-8AB8-0C62E87C338D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F96081F6-301D-4785-8AB8-0C62E87C338D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{37E153E9-00EF-4B20-B08A-7738037118A3} = {6D95C5B4-CD48-4805-AEBC-516F053DFE75}
@@ -77,5 +83,6 @@ Global
 		{D3F73049-14F9-4F74-8673-08F469BD65BE} = {BAAE02B2-9EBF-4235-9CD5-42C5687EDDB9}
 		{485ADF33-B771-4BA7-BB8C-08320D5357AC} = {BAAE02B2-9EBF-4235-9CD5-42C5687EDDB9}
 		{8A99CF5C-ADEA-465C-BB79-A9A71A7FF82E} = {5C1F5661-2466-42D2-BD99-640FAD2ECCEC}
+		{F96081F6-301D-4785-8AB8-0C62E87C338D} = {D2D2C3B5-2226-474A-9BA3-91843F26EAAA}
 	EndGlobalSection
 EndGlobal
