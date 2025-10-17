@@ -37,25 +37,20 @@ jobs:
           fi
         continue-on-error: true
 
-      - name: Publish ${{ matrix.service.name }}
+      - name: Build and export Docker image
         run: |
           cd services/${{ matrix.service.path }}
+          
+          # Publish .NET application
           dotnet publish src/${{ matrix.service.path }}.Server/${{ matrix.service.path }}.Server.csproj \
             -c Release \
             -o ${{ matrix.service.path }}ServicePublish/
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./services/${{ matrix.service.path }}
-          file: ./services/${{ matrix.service.path }}/Dockerfile
-          tags: ${{ matrix.service.name }}-service:test
-          outputs: type=docker,dest=/tmp/${{ matrix.service.name }}-service.tar
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          
+          # Build Docker image
+          docker build -t ${{ matrix.service.name }}-service:test .
+          
+          # Save image to tar
+          docker save ${{ matrix.service.name }}-service:test -o /tmp/${{ matrix.service.name }}-service.tar
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
