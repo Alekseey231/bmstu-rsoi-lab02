@@ -27,9 +27,9 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      - Services__LibraryService=http://library-service:8060
-      - Services__RatingService=http://rating-service:8050
-      - Services__ReservationService=http://reservation-service:8070
+      - HttpClientConfig__LibraryServiceUrl=http://library-service:8060
+      - HttpClientConfig__RatingServiceUrl=http://rating-service:8050
+      - HttpClientConfig__ReservationServiceUrl=http://reservation-service:8070
 
   library-service:
     image: library-service:test
