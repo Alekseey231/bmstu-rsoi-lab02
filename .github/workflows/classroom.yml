@@ -117,6 +117,7 @@ jobs:
           reporters: '[ "cli" ]'
 
       - name: Show logs 
+        if: always()
         run: |
           echo "=== Postgres Logs ==="
           docker compose -f docker-compose.test.yml logs postgres
