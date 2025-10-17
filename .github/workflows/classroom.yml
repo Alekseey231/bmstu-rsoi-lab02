@@ -80,7 +80,7 @@ jobs:
           docker load --input /tmp/images/reservation-service/reservation-service.tar
 
       - name: Start services
-        run: docker-compose -f docker-compose.test.yml up -d
+        run: docker compose -f docker-compose.test.yml up -d
 
       - name: Wait for services to be healthy
         run: |
@@ -92,21 +92,21 @@ jobs:
       - name: Check services status
         run: |
           echo "=== Docker Compose Status ==="
-          docker-compose -f docker-compose.test.yml ps
+          docker compose -f docker-compose.test.yml ps
 
       - name: Show logs on failure
         if: failure()
         run: |
           echo "=== Postgres Logs ==="
-          docker-compose -f docker-compose.test.yml logs postgres
+          docker compose -f docker-compose.test.yml logs postgres
           echo "=== Gateway Logs ==="
-          docker-compose -f docker-compose.test.yml logs gateway-service
+          docker compose -f docker-compose.test.yml logs gateway-service
           echo "=== Library Logs ==="
-          docker-compose -f docker-compose.test.yml logs library-service
+          docker compose -f docker-compose.test.yml logs library-service
           echo "=== Rating Logs ==="
-          docker-compose -f docker-compose.test.yml logs rating-service
+          docker compose -f docker-compose.test.yml logs rating-service
           echo "=== Reservation Logs ==="
-          docker-compose -f docker-compose.test.yml logs reservation-service
+          docker compose -f docker-compose.test.yml logs reservation-service
 
       - name: Run Postman Tests
         uses: matt-ball/newman-action@master
@@ -118,7 +118,7 @@ jobs:
 
       - name: Cleanup
         if: always()
-        run: docker-compose -f docker-compose.test.yml down -v
+        run: docker compose -f docker-compose.test.yml down -v
 
       - name: Autograding
         uses: education/autograding@v1
