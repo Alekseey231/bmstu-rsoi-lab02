@@ -1,4 +1,4 @@
-name: GitHub Classroom Workflow
+name: Microservices CI
 on:
   push:
     branches:
@@ -6,42 +6,126 @@ on:
   pull_request:
     branches:
       - master
+
 jobs:
   build:
-    name: Autograding
+    name: Build Services
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - { name: 'gateway', path: 'GatewayService', port: '8080' }
+          - { name: 'library', path: 'LibraryService', port: '8060' }
+          - { name: 'rating', path: 'RatingService', port: '8050' }
+          - { name: 'reservation', path: 'ReservationService', port: '8070' }
+    
     steps:
       - uses: actions/checkout@v3
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v3
         with:
-          fetch-depth: 0
+          dotnet-version: '8.0.x'
 
-      - uses: docker/setup-buildx-action@v2
-
-      # TODO build and run unit tests
-
-      - name: Build images
-        timeout-minutes: 10
-        run: docker compose build
-
-      - name: Run containers
-        timeout-minutes: 5
+      - name: Run Unit Tests
         run: |
-          docker compose up -d
-          ./scripts/wait-script.sh
-        env:
-          WAIT_PORTS: 8080,8070,8060,8050
+          if [ -d "services/${{ matrix.service.path }}/src/${{ matrix.service.path }}.Tests" ]; then
+            dotnet test services/${{ matrix.service.path }}/src/${{ matrix.service.path }}.Tests/ --configuration Release --verbosity normal
+          else
+            echo "No tests found for ${{ matrix.service.name }}, skipping..."
+          fi
+        continue-on-error: true
+
+      - name: Publish ${{ matrix.service.name }}
+        run: |
+          cd services/${{ matrix.service.path }}
+          dotnet publish src/${{ matrix.service.path }}.Server/${{ matrix.service.path }}.Server.csproj \
+            -c Release \
+            -o ${{ matrix.service.path }}ServicePublish/
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./services/${{ matrix.service.path }}
+          file: ./services/${{ matrix.service.path }}/Dockerfile
+          tags: ${{ matrix.service.name }}-service:test
+          outputs: type=docker,dest=/tmp/${{ matrix.service.name }}-service.tar
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.service.name }}-service
+          path: /tmp/${{ matrix.service.name }}-service.tar
+          retention-days: 1
+
+  integration-tests:
+    name: Integration Tests
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: /tmp/images
+
+      - name: Load Docker images
+        run: |
+          docker load --input /tmp/images/gateway-service/gateway-service.tar
+          docker load --input /tmp/images/library-service/library-service.tar
+          docker load --input /tmp/images/rating-service/rating-service.tar
+          docker load --input /tmp/images/reservation-service/reservation-service.tar
+
+      - name: Start services
+        run: docker-compose -f docker-compose.test.yml up -d
+
+      - name: Wait for services to be healthy
+        run: |
+          chmod +x ./Scripts/wait-script.sh
+          chmod +x ./Scripts/wait-for.sh
+          export WAIT_PORTS="8080,8060,8050,8070"
+          ./Scripts/wait-script.sh
+
+      - name: Check services status
+        run: |
+          echo "=== Docker Compose Status ==="
+          docker-compose -f docker-compose.test.yml ps
+
+      - name: Show logs on failure
+        if: failure()
+        run: |
+          echo "=== Postgres Logs ==="
+          docker compose -f docker-compose.test.yml logs postgres
+          echo "=== Gateway Logs ==="
+          docker compose -f docker-compose.test.yml logs gateway-service
+          echo "=== Library Logs ==="
+          docker compose -f docker-compose.test.yml logs library-service
+          echo "=== Rating Logs ==="
+          docker compose -f docker-compose.test.yml logs rating-service
+          echo "=== Reservation Logs ==="
+          docker compose -f docker-compose.test.yml logs reservation-service
 
       - name: Run API Tests
         uses: matt-ball/newman-action@master
         with:
-          # TODO insert your variant
-          collection: <variant>/postman/collection.json
-          environment: <variant>/postman/environment.json
+          collection: v4/postman/collection.json
+          environment: v4/postman/environment.json
           delayRequest: 100
           reporters: '[ "cli" ]'
 
-      - uses: education/autograding@v1
-        id: autograder
+      - name: Cleanup
+        if: always()
+        run: docker compose -f docker-compose.test.yml down -v
+
+      - name: Autograding
+        uses: education/autograding@v1
         continue-on-error: true
 
       - name: Github auto grader mark
@@ -49,12 +133,8 @@ jobs:
         with:
           google_token: ${{secrets.GOOGLE_API_KEY}}
           sheet_id: "1xkgjUX6Qmk7rdJG-QPOToav-HWWtthJjnShIKnw3oIY"
-          homework_number: 2
+          homework_number: 1
           user_column: 'D'
           column_offset: 'F'
           mark: "'+"
-
-      - name: Stop containers
-        if: always()
         continue-on-error: true
-        run: docker compose down -v
