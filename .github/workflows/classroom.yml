@@ -84,10 +84,10 @@ jobs:
 
       - name: Wait for services to be healthy
         run: |
-          chmod +x ./Scripts/wait-script.sh
-          chmod +x ./Scripts/wait-for.sh
+          chmod +x ./scripts/wait-script.sh
+          chmod +x ./scripts/wait-for.sh
           export WAIT_PORTS="8080,8060,8050,8070"
-          ./Scripts/wait-script.sh
+          ./scripts/wait-script.sh
 
       - name: Check services status
         run: |
