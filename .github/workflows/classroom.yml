@@ -30,7 +30,7 @@ jobs:
       - name: Run Unit Tests
         run: |
           cd services/${{ matrix.service.path }}
-          if [ -d "src/${{ matrix.service.path }}.Tests" ]; then
+          if [ -d "src/Tests" ]; then
             dotnet test src/${{ matrix.service.path }}.sln
           else
             echo "No tests found for ${{ matrix.service.name }}, skipping..."
