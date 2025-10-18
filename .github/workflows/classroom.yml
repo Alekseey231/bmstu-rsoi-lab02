@@ -35,7 +35,6 @@ jobs:
           else
             echo "No tests found for ${{ matrix.service.name }}, skipping..."
           fi
-        continue-on-error: true
 
       - name: Build and export Docker image
         run: |
