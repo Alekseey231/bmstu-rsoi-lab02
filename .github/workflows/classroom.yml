@@ -31,7 +31,7 @@ jobs:
         run: |
           cd services/${{ matrix.service.path }}
           if [ -d "src/${{ matrix.service.path }}.Tests" ]; then
-            dotnet test src/${{ matrix.service.path }}.Tests/ --configuration Release --verbosity normal
+            dotnet test src/${{ matrix.service.path }}.sln
           else
             echo "No tests found for ${{ matrix.service.name }}, skipping..."
           fi
